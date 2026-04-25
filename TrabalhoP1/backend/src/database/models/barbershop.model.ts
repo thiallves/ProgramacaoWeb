@@ -3,8 +3,9 @@ import {
     Column,
     Model,
     DataType,
+    HasMany,
 } from 'sequelize-typescript';
-
+import {Service} from './service.model'
 interface BarbershopAttributes {
     id?: number;
     name: string;
@@ -45,4 +46,7 @@ export class Barbershop extends Model<BarbershopAttributes> {
 
     @Column(DataType.FLOAT)
     longitude: number;
+
+    @HasMany(() => Service)
+    services: Service[];
 }

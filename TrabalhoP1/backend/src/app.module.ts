@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { BarbershopsModule } from './modules/barbershops/barbershops.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { ServicesModule } from './modules/services/services.module';
 
 @Module({
   imports: [
@@ -16,8 +17,9 @@ import { UsersModule } from './modules/users/users.module';
     BarbershopsModule,
     AuthModule,
     UsersModule,
+    ServicesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, Length } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
+import { UserRole } from '../../../database/models/user.model';
+import { IsEmail } from 'class-validator';
 
 export class CreateUserDto {
 
@@ -9,7 +12,7 @@ export class CreateUserDto {
   name: string;
 
   @ApiProperty()
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
   email: string;
 
@@ -23,4 +26,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @Length(10, 11)
   phone: string;
+
+  @ApiProperty({ example: 'ADMIN, CLIENTE ou BARBEIRO' })
+  @IsEnum(UserRole)
+  @IsOptional()
+  role?: UserRole;
 }

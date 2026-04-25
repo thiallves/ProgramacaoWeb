@@ -1,38 +1,67 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+} from 'sequelize-typescript';
 
-interface UserAttributes {
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  CLIENTE = 'CLIENTE',
+  BARBEIRO = 'BARBEIRO',
+}
+
+export interface UserAttributes {
   id?: number;
   name: string;
   email: string;
   password: string;
   phone: string;
+  role: UserRole;
+  barbershopId: number;
 }
 
+export interface UserCreationAttributes
+  extends Omit<UserAttributes, 'id'> { }
+
 @Table
-export class User extends Model<UserAttributes> implements UserAttributes {
+export class User extends Model<UserAttributes, UserCreationAttributes> {
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  name: string;
+  declare name: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
     unique: true,
   })
-  email: string;
+  declare email: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  password: string;
+  declare password: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  phone: string;
+  declare phone: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  declare barbershopId: number;
+
+  @Column({
+    type: DataType.ENUM('ADMIN', 'CLIENTE', 'BARBEIRO'),
+    allowNull: false,
+    defaultValue: 'CLIENTE',
+  })
+  declare role: UserRole;
 }

@@ -19,7 +19,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 @ApiTags('Barbershops')
 @Controller('barbershops')
 export class BarbershopsController {
-  constructor(private readonly service: BarbershopsService) {}
+  constructor(private readonly service: BarbershopsService) { }
 
   @Post()
   @ApiOperation({ summary: 'Criar uma nova barbearia' })

@@ -9,4 +9,4 @@ import { Barbershop } from '../../database/models/barbershop.model';
   controllers: [BarbershopsController],
   providers: [BarbershopsService],
 })
-export class BarbershopsModule {}
+export class BarbershopsModule { }
