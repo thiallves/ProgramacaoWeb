@@ -37,7 +37,7 @@ export class ServicesController {
     return this.service.findAll(req.user);
   }
 
-  // READ ONE
+  
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req: any) {
