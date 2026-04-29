@@ -9,16 +9,20 @@ import {
   Delete,
   UseGuards,
   Req,
-  ForbiddenException,
 } from '@nestjs/common';
+
 import { RequestWithUser } from '../../common/interfaces/request-with-user.interface';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-//import { Request } from 'express';
 
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -28,37 +32,54 @@ import { UserRole } from '../../database/models/user.model';
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly service: UsersService) { }
+  constructor(private readonly service: UsersService) {}
 
-  //  Público
+  // 🔓 CRIAR USUÁRIO (PÚBLICO)
   @Post()
   @ApiOperation({ summary: 'Criar usuário' })
-  create(@Body() body: CreateUserDto, @Req() req: any) {
+  create(
+    @Body() body: CreateUserDto,
+    @Req() req: any,
+  ) {
     return this.service.create(body, req.user);
   }
 
-  // Qualquer usuário autenticado
+  // 🔐 LISTAR USUÁRIOS (COM PAGINAÇÃO + FILTROS)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get()
-  @ApiOperation({ summary: 'Listar usuários (logado)' })
-  findAll() {
-    return this.service.findAll();
+  @ApiOperation({
+    summary: 'Listar usuários com paginação e filtros',
+  })
+
+  @ApiQuery({ name: 'page', required: false, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, example: 10 })
+  @ApiQuery({ name: 'name', required: false })
+  @ApiQuery({ name: 'role', required: false })
+
+  findAll(@Req() req: any) {
+    return this.service.findAll(
+      Number(req.query.page) || 1,
+      Number(req.query.limit) || 10,
+      req.query.name as string,
+      req.query.role as string,
+    );
   }
 
-  // Qualquer usuário autenticado
+  // 🔐 BUSCAR POR ID
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get(':id')
-  @ApiOperation({ summary: 'Buscar usuário por ID (logado)' })
+  @ApiOperation({ summary: 'Buscar usuário por ID' })
   findOne(@Param('id') id: string) {
     return this.service.findOne(Number(id));
   }
 
-  // Qualquer usuário autenticado
+  // 🔐 ATUALIZAÇÃO COMPLETA
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Put(':id')
+  @ApiOperation({ summary: 'Atualizar usuário (PUT)' })
   replace(
     @Param('id') id: string,
     @Body() body: CreateUserDto,
@@ -71,9 +92,11 @@ export class UsersController {
     );
   }
 
+  // 🔐 ATUALIZAÇÃO PARCIAL
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(':id')
+  @ApiOperation({ summary: 'Atualizar usuário (PATCH)' })
   update(
     @Param('id') id: string,
     @Body() body: UpdateUserDto,
@@ -85,9 +108,12 @@ export class UsersController {
       body,
     );
   }
+
+  // 🔐 REMOVER
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Delete(':id')
+  @ApiOperation({ summary: 'Remover usuário' })
   remove(
     @Param('id') id: string,
     @Req() req: any,
@@ -97,5 +123,4 @@ export class UsersController {
       req.user,
     );
   }
-
 }

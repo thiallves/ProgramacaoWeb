@@ -25,10 +25,7 @@ export class ServicesController {
   create(@Body() data: CreateServiceDto, @Req() req: any) {
     return this.service.create(data, req.user);
   }
-  /*create(@Body() dto: CreateServiceDto, @Req() req: any) {
-    
-    return this.service.create(dto, req.user);
-  }*/
+ 
 
 
   @UseGuards(JwtAuthGuard)
@@ -37,7 +34,7 @@ export class ServicesController {
     return this.service.findAll(req.user);
   }
 
-  
+  // READ ONE
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req: any) {
